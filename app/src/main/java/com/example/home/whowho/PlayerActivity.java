@@ -24,7 +24,7 @@ import static com.example.home.whowho.R.id.listView;
 
 public class PlayerActivity extends Activity {
 
-    String[][] st = new String[10][3];
+    String[][] st;
     //String[][] st;
     private Context context;
     private GridAdapter adapter;
@@ -61,7 +61,13 @@ public class PlayerActivity extends Activity {
                     public void run() {
 
                         System.out.println("listnum " + cnt);
-                        st = new String[cnt][3];
+
+                        if(cnt==0) {
+                            st = new String[1][3];
+                        } else {
+                            st = new String[cnt][3];
+                        }
+
                         c();
 
                         Handler h2 = new Handler();
@@ -69,6 +75,11 @@ public class PlayerActivity extends Activity {
                             @Override
                             public void run() {
                                 System.out.println("#########88# name : " + st[0][0] + " sport : " + st[0][1] + " nation : " + st[0][2]);
+                                if(st[0][0] == null) {
+                                    st[0][0] = "해당 조건의 선수가 없습니다.";
+                                    st[0][1] = ".";
+                                    st[0][2] = "No";
+                                }
                                 adapter = new GridAdapter(context, st, true);
                                 System.out.println("check************");
                                 listView.setAdapter(adapter);

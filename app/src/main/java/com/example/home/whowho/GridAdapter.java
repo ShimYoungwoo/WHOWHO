@@ -1,8 +1,6 @@
 package com.example.home.whowho;
 
 import android.content.Context;
-import android.os.Handler;
-import android.os.Message;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,6 +23,8 @@ public class GridAdapter extends BaseAdapter {
     private boolean isListView;
     private SparseBooleanArray mSelectedItemsIds;
     private boolean[] cntCheck;
+
+
 
     public GridAdapter(Context context, String[][] arrayList, boolean isListView) {
         this.context = context;
@@ -143,7 +143,8 @@ public class GridAdapter extends BaseAdapter {
             else if(arrayList[i][2].equalsIgnoreCase("USA")){
                 viewHolder.country.setImageResource(R.drawable.flag_usa);
             }
-            else{
+            else if(arrayList[i][2].equalsIgnoreCase("No")){
+                viewHolder.country.setImageResource(R.drawable.btn_no_flag);
                 System.out.println("에러란다!!!!!!!!!!!");
             }
         }
@@ -204,7 +205,7 @@ public class GridAdapter extends BaseAdapter {
 
     public void checkCheckBox(int position, boolean value) {
         if (value){
-            //System.out.println(position + "에 체크가 되었단다");
+            System.out.println(position + "에 체크가 되었단다");
             mSelectedItemsIds.put(position, true);
 
         }

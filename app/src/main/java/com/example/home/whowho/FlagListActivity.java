@@ -18,7 +18,7 @@ import android.widget.Toast;
 
 /**
  * Created by YUNA on 2017-08-08.
- *
+ *            s0woo on 2017-08-16
  */
 
 public class FlagListActivity extends Activity{
