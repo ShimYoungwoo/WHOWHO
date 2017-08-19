@@ -114,7 +114,6 @@ public class FlagListActivity extends Activity{
                 intent.putExtra("country",countries[position]);
                 intent.putExtra("sport", sport);
                 startActivity(intent);
-                System.out.println("ㅇㅇ");
             }
         });
 

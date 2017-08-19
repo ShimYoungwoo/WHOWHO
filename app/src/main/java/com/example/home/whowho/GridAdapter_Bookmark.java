@@ -1,13 +1,10 @@
 package com.example.home.whowho;
 
-import android.app.Activity;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.support.v7.app.AppCompatCallback;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -16,12 +13,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 /**
- * Created by YUNA on 2017-06-26.
- *             YUUUUU on 2017-08-13.
- *             s0woo on 2017-08-16.
+ * Created by s0woo on 2017-08-20.
  */
 
-public class GridAdapter extends BaseAdapter {
+public class GridAdapter_Bookmark extends BaseAdapter {
     private Context context;
     private String[][] arrayList;
     private LayoutInflater inflater;
@@ -29,7 +24,7 @@ public class GridAdapter extends BaseAdapter {
     private SparseBooleanArray mSelectedItemsIds;
     private boolean[] cntCheck;
 
-    public GridAdapter(Context context, String[][] arrayList, boolean isListView) {
+    public GridAdapter_Bookmark(Context context, String[][] arrayList, boolean isListView) {
         this.context = context;
         this.arrayList = arrayList;
         this.isListView = isListView;
@@ -68,9 +63,9 @@ public class GridAdapter extends BaseAdapter {
 
             //inflate the layout on basis of boolean
             if (isListView)
-                view = inflater.inflate(R.layout.player_list_custom_row, viewGroup, false);
+                view = inflater.inflate(R.layout.player_list_custom_row_inversion, viewGroup, false);
             else
-                view = inflater.inflate(R.layout.player_list_custom_row, viewGroup, false);
+                view = inflater.inflate(R.layout.player_list_custom_row_inversion, viewGroup, false);
 
             viewHolder.player = (TextView) view.findViewById(R.id.player);
             viewHolder.checkBox = (CheckBox) view.findViewById(R.id.checkbox);
@@ -217,73 +212,37 @@ public class GridAdapter extends BaseAdapter {
         bookmark.onCreate(dbBM);
         Cursor c = dbBM.query("Bookmark", null, null, null, null, null, null);
 
-        String overlap;
-
         if (value){
-            System.out.println(position + "에 체크가 되었단다");
+            System.out.println(position + "에 체크가 되었단다 = 체크해제 ");
+            //db삭제
             mSelectedItemsIds.put(position, true);
-            System.out.println("array ::::::" + arrayList[position][0]);
 
-            c.moveToFirst();
-            if(c.getCount() != 0) {
 
-                String dbName = c.getString(c.getColumnIndex("name"));
-                String dbSport = c.getString(c.getColumnIndex("sport"));
-                String dbNation = c.getString(c.getColumnIndex("nation"));
-                System.out.println("position + " + position);
-                System.out.println("db내용물 ### : " + dbName + " " + dbSport + " " + dbNation);
-                System.out.println(arrayList[position][0] + " " + arrayList[position][1] + " " + arrayList[position][2]);
+            String[][] tmp = new String[arrayList.length][3];
 
-                if(dbName.equals(arrayList[position][0]) && dbSport.equals(arrayList[position][1]) && dbNation.equals(arrayList[position][2])) {
-                    System.out.println("첫번째 중복있음");
-                    overlap = "yes";
-                }
-                else {
-                    overlap = "no";
-                }
-
-                if(overlap.equals("no")) {
-                    while(c.moveToNext()) {
-                        dbName = c.getString(c.getColumnIndex("name"));
-                        dbSport = c.getString(c.getColumnIndex("sport"));
-                        dbNation = c.getString(c.getColumnIndex("nation"));
-
-                        System.out.println("db내용물 ### : " + dbName + " " + dbSport + " " + dbNation);
-                        System.out.println(arrayList[position][0] + " " + arrayList[position][1] + " " + arrayList[position][2]);
-
-                        if (dbName.equals(arrayList[position][0]) && dbSport.equals(arrayList[position][1]) && dbNation.equals(arrayList[position][2])) {
-                            System.out.println("중복있음");
-                            overlap = "yes";
-                            break;
-                        } else {
-                            overlap = "no";
-                        }
-                    }
-                }
-
-                if(overlap.equals("no")) {
-                    if(!arrayList[position][0].equals(null)) {
-                        System.out.println("overlap : " + overlap);
-                        bookmark.insert(arrayList[position][0], arrayList[position][1], arrayList[position][2]);
-                    }
-                }
-            }
-            else {
-                System.out.println("db 내용물 없어서 내용 입력");
-                if(!arrayList[position][0].equals(null)) {
-                    bookmark.insert(arrayList[position][0], arrayList[position][1], arrayList[position][2]);
-                }
+            for(int i=0; i < arrayList.length; i++) {
+                tmp[i][0] = arrayList[i][0];
+                tmp[i][1] = arrayList[i][1];
+                tmp[i][2] = arrayList[i][2];
             }
 
-            String result = bookmark.getResult();
-            System.out.println("*******db \n" + result);
-        }
-        else{
-            System.out.println(position + "에 체크는 개뿔");
+            /*
+            배열 줄이기
+            for(int t = position; t<arrayList.length; t++) {
+                arrayList[t][0] = tmp[t+1][0];
+                arrayList[t][1] = tmp[t+1][1];
+                arrayList[t][2] = tmp[t+1][2];
+            }*/
+
             mSelectedItemsIds.delete(position);
             bookmark.delete(arrayList[position][0], arrayList[position][1], arrayList[position][2]);
             String result = bookmark.getResult();
             System.out.println("*******db \n" + result);
+
+        }
+        else{
+            System.out.println(position + "에 체크해제");
+            mSelectedItemsIds.delete(position);
         }
         notifyDataSetChanged();
     }

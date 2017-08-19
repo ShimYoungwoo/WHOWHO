@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_marginTop="12dp"
-        android:button="@drawable/checkonoff" />
+        android:button="@drawable/checkoffon" />
 
     <TextView
         android:id="@+id/player"

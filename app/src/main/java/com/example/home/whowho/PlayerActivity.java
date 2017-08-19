@@ -3,6 +3,8 @@ package com.example.home.whowho;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.SparseBooleanArray;
@@ -37,6 +39,9 @@ public class PlayerActivity extends Activity {
     String country, sport;
     int cnt;
 
+    DBbookmark bookmark = new DBbookmark(PlayerActivity.this, "Bookmark.db", null, 1);
+    SQLiteDatabase dbBM;
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.player_list);
@@ -45,9 +50,12 @@ public class PlayerActivity extends Activity {
         sport = getIntent().getStringExtra("sport");
         System.out.println("country : " + country + " sport : " + sport);
 
-
         final ListView listView = (ListView) findViewById(R.id.playerlistview);
         context = this;
+
+        dbBM = bookmark.getWritableDatabase();
+        bookmark.onCreate(dbBM);
+        final Cursor c = dbBM.query("Bookmark", null, null, null, null, null, null);
 
         Handler handler = new Handler();
         handler.postDelayed(new Runnable(){
@@ -68,7 +76,7 @@ public class PlayerActivity extends Activity {
                             st = new String[cnt][3];
                         }
 
-                        c();
+                        cubrid();
 
                         Handler h2 = new Handler();
                         h2.postDelayed(new Runnable() {
@@ -84,11 +92,39 @@ public class PlayerActivity extends Activity {
                                 System.out.println("check************");
                                 listView.setAdapter(adapter);
 
+                                for(int i=0; i<cnt; i++) {
+                                    if(c.getCount() == 0) {
+                                        System.out.println("db내용 없음");
+                                        break;
+                                    }
+                                    c.moveToFirst();
+                                    String dbName = c.getString(c.getColumnIndex("name"));
+                                    String dbSport = c.getString(c.getColumnIndex("sport"));
+                                    String dbNation = c.getString(c.getColumnIndex("nation"));
+                                    //System.out.println("**Db check : " + dbName + " " + dbSport + dbNation);
+                                    if(dbName.equals(st[i][0]) && dbSport.equals(st[i][1]) && dbNation.equals(st[i][2])) {
+                                        System.out.println("i" + i);
+                                        adapter.checkCheckBox(i,true);
+                                    }
+
+                                    while(c.moveToNext()) {
+                                        dbName = c.getString(c.getColumnIndex("name"));
+                                        dbSport = c.getString(c.getColumnIndex("sport"));
+                                        dbNation = c.getString(c.getColumnIndex("nation"));
+                                        //System.out.println("**Db check : " + dbName + " " + dbSport + dbNation);
+                                        if(dbName.equals(st[i][0]) && dbSport.equals(st[i][1]) && dbNation.equals(st[i][2])) {
+                                            System.out.println("i" + i);
+                                            adapter.checkCheckBox(i,true);
+                                        }
+                                    }
+                                }
+
                                 tmp = adapter.getSelectedIds();
+                                //adapter.checkCheckBox(1,true);
                             }
-                        },1000);
+                        },1500);
                     }
-                }, 1000);
+                }, 1500);
             }
         }, 1000);
     }
@@ -101,7 +137,7 @@ public class PlayerActivity extends Activity {
             public void run() {
                 try {
                     Class.forName("cubrid.jdbc.driver.CUBRIDDriver");
-                    String jdbcUrl = "jdbc:cubrid:172.21.137.120:30000:sample:::?charset=UTF-8";
+                    String jdbcUrl = "jdbc:cubrid:192.168.0.9:30000:sample:::?charset=UTF-8";
 
                     conn = DriverManager.getConnection(jdbcUrl, "dba", "1234");
 
@@ -131,13 +167,13 @@ public class PlayerActivity extends Activity {
     }
 
 
-    void c() {
+    void cubrid() {
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
                     Class.forName("cubrid.jdbc.driver.CUBRIDDriver");
-                    String jdbcUrl = "jdbc:cubrid:172.21.137.120:30000:sample:::?charset=UTF-8";
+                    String jdbcUrl = "jdbc:cubrid:192.168.0.9:30000:sample:::?charset=UTF-8";
 
                     conn = DriverManager.getConnection(jdbcUrl, "dba", "1234");
 

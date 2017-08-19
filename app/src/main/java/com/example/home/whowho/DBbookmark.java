@@ -70,4 +70,18 @@ public class DBbookmark extends SQLiteOpenHelper {
 
         return result;
     }
+
+    public int getCount() {
+        SQLiteDatabase db = getReadableDatabase();
+        int i=0;
+
+        // DB에 있는 데이터를 쉽게 처리하기 위해 Cursor를 사용하여 테이블에 있는 모든 데이터 출력
+        Cursor cursor = db.rawQuery("SELECT * FROM Bookmark", null);
+
+        while (cursor.moveToNext()) {
+            i++;
+        }
+
+        return i;
+    }
 }

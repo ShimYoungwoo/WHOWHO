@@ -2,15 +2,10 @@ package com.example.home.whowho;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.DhcpInfo;
-import android.net.wifi.WifiInfo;
-import android.net.wifi.WifiManager;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.util.SparseBooleanArray;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -20,35 +15,28 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
-import android.widget.Toast;
 
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.net.SocketException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Enumeration;
 
 
-public class MenuActivity extends AppCompatActivity
-
-        implements NavigationView.OnNavigationItemSelectedListener {
+public class MenuActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private Context context;
     private GridAdapter adapter;
     String[][] st = new String[114][3];
     //private String[][] path;
     SparseBooleanArray tmp;
+    int a;
 
     Connection conn = null;
     Statement stmt = null;
     ResultSet rs = null;
 
-    //String name;
-    //String sport;
-    //String nation;
+    DBbookmark bookmark = new DBbookmark(MenuActivity.this, "Bookmark.db", null, 1);
+    SQLiteDatabase dbBM;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,12 +57,15 @@ public class MenuActivity extends AppCompatActivity
 
         ListView listView = (ListView) findViewById(R.id.listView);
 
+        dbBM = bookmark.getWritableDatabase();
+        bookmark.onCreate(dbBM);
+        final Cursor c = dbBM.query("Bookmark", null, null, null, null, null, null);
+
         //checkAvalialbleConnection();
         //String ip = GetLocalIpAddress();
         //System.out.println("IP주소 : " + ip);
 
-
-        c();
+        cubrid();
 
 
         context = this;
@@ -82,6 +73,41 @@ public class MenuActivity extends AppCompatActivity
         listView.setAdapter(adapter);
 
         tmp = adapter.getSelectedIds();
+
+        android.os.Handler handler = new android.os.Handler();
+        handler.postDelayed(new Runnable(){
+            public void run() {
+                for(int i=0; i<114; i++) {
+                    if(c.getCount() == 0) {
+                        System.out.println("db내용 없음");
+                        adapter.checkCheckBox(i,false);
+                        break;
+                    }
+                    c.moveToFirst();
+                    String dbName = c.getString(c.getColumnIndex("name"));
+                    String dbSport = c.getString(c.getColumnIndex("sport"));
+                    String dbNation = c.getString(c.getColumnIndex("nation"));
+                    //System.out.println("**Db check : " + dbName + " " + dbSport + dbNation);
+                    //System.out.println("st 내용    : " + st[i][0] + " " + st[i][1] + " " + st[i][2]);
+                    if(dbName.equals(st[i][0]) && dbSport.equals(st[i][1]) && dbNation.equals(st[i][2])) {
+                        System.out.println("i" + i);
+                        adapter.checkCheckBox(i,true);
+                    }
+
+                    while(c.moveToNext()) {
+                        dbName = c.getString(c.getColumnIndex("name"));
+                        dbSport = c.getString(c.getColumnIndex("sport"));
+                        dbNation = c.getString(c.getColumnIndex("nation"));
+                        //System.out.println("**Db check : " + dbName + " " + dbSport + dbNation);
+                        //System.out.println("st 내용    : " + st[i][0] + " " + st[i][1] + " " + st[i][2]);
+                        if(dbName.equals(st[i][0]) && dbSport.equals(st[i][1]) && dbNation.equals(st[i][2])) {
+                            System.out.println("i" + i);
+                            adapter.checkCheckBox(i,true);
+                        }
+                    }
+                }
+            }
+        }, 1000);
 
     }
 
@@ -125,7 +151,8 @@ public class MenuActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if(id == R.id.LIKE) {
-
+            Intent intent = new Intent(getApplication(), BookmarkActivity.class);
+            startActivity(intent);
 
         } else if (id == R.id.ALP) {
             Intent intent = new Intent(getApplication(), FlagListActivity.class);
@@ -210,13 +237,13 @@ public class MenuActivity extends AppCompatActivity
     }
 
 
-    void c() {
+    void cubrid() {
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
                     Class.forName("cubrid.jdbc.driver.CUBRIDDriver");
-                    String jdbcUrl = "jdbc:cubrid:172.21.137.120:30000:sample:::?charset=UTF-8";
+                    String jdbcUrl = "jdbc:cubrid:192.168.0.9:30000:sample:::?charset=UTF-8";
 
                     conn = DriverManager.getConnection(jdbcUrl, "dba", "1234");
 
