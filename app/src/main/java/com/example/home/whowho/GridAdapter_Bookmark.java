@@ -82,6 +82,7 @@ public class GridAdapter_Bookmark extends BaseAdapter {
         viewHolder.checkBox.setChecked(mSelectedItemsIds.get(i));
 
         if(arrayList[i][0]!=null){
+            //arrayList[i][2]번째의 값에 따라 나라 국기 다르게 표현
             if(arrayList[i][2].equalsIgnoreCase("Albania")) {
                 viewHolder.country.setImageResource(R.drawable.flag_albania);
             }
@@ -149,7 +150,6 @@ public class GridAdapter_Bookmark extends BaseAdapter {
         }
 
 
-
         viewHolder.checkBox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -187,7 +187,6 @@ public class GridAdapter_Bookmark extends BaseAdapter {
         });
 
         return view;
-
     }
 
 
@@ -211,23 +210,23 @@ public class GridAdapter_Bookmark extends BaseAdapter {
         bookmark.onCreate(dbBM);
         Cursor c = dbBM.query("Bookmark", null, null, null, null, null, null);
 
+        //checkBox 체크 된다면 DB에서 선수 삭제
         if (value){
-            //System.out.println(position + "에 체크가 되었단다 = 체크해제 ");
-
             Toast.makeText(this.context, "화면을 위로 당겨 새로고침 후 잠시만 기다려주세요", Toast.LENGTH_LONG).show();
 
-            //db삭제
             mSelectedItemsIds.put(position, true);
-
             mSelectedItemsIds.delete(position);
+
+            //db삭제
             bookmark.delete(arrayList[position][0], arrayList[position][1], arrayList[position][2]);
             String result = bookmark.getResult();
             System.out.println("*******db \n" + result);
-
         }
         else{
+            /*
             System.out.println(position + "에 체크해제");
             mSelectedItemsIds.delete(position);
+            */
         }
         notifyDataSetChanged();
     }

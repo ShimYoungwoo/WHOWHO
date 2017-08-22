@@ -24,14 +24,17 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+/**
+ * Created by YUNA 2017-08-10.
+ *            s0woo 2017-08-16.
+ */
+
 
 public class MenuActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private Context context;
     private GridAdapter adapter;
-    String[][] st = new String[114][3];
-    //private String[][] path;
+    String[][] st = new String[114][3]; //전체 선수 114명
     SparseBooleanArray tmp;
-    int a;
 
     Connection conn = null;
     Statement stmt = null;
@@ -76,7 +79,7 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
-
+    //화면이 실행될 때 마다 다음 함수 실행
     @Override
     public void onResume() {
         super.onResume();
@@ -95,6 +98,7 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
 
         progressBarDialog();
 
+        //bookmark DB에 저장된 내용이라면 체크박스 true 표시
         android.os.Handler handler = new android.os.Handler();
         handler.postDelayed(new Runnable(){
             public void run() {
@@ -110,8 +114,8 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
                     String dbName = c.getString(c.getColumnIndex("name"));
                     String dbSport = c.getString(c.getColumnIndex("sport"));
                     String dbNation = c.getString(c.getColumnIndex("nation"));
-                    System.out.println("**Db check : " + dbName + " " + dbSport + dbNation);
-                    System.out.println("st 내용    : " + st[i][0] + " " + st[i][1] + " " + st[i][2]);
+                    //System.out.println("**Db check : " + dbName + " " + dbSport + dbNation);
+                    //System.out.println("st 내용    : " + st[i][0] + " " + st[i][1] + " " + st[i][2]);
 
                     if(dbName.equals(st[i][0]) && dbSport.equals(st[i][1]) && dbNation.equals(st[i][2])) {
                         System.out.println("i" + i);
@@ -163,7 +167,6 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_search) {
-
             return true;
         }
 
@@ -261,12 +264,21 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
-
+     /*** 외부 DB인 cubrid 실행 ***
+      * String jdbcUrl의 172.30.1.48은 현재 큐브리드가 설치된 컴퓨터(노트북)와 연결된 LAN(혹은 무선 WIFI)의 IPv4 주소이며,
+      * 어플리케이션을 실행하는 핸드폰도 컴퓨터와 같은 LAN(혹은 무선WIFI)에 연결되어 있어야 큐브리드의 내용을 조회 가능.
+      *
+      * 컴퓨터와 연결된 LAN(혹은 무선WIFI)가 달라진다면,
+      * cmd창에서 'ipconfig /all' 명령어를 수행하고 LAN(혹은 무선 WIFI)의 IPv4 주소를 '172.30.1.48' 위치에 입력하여야 한다.
+      * IPv4 주소가 잘못될경우 에러가 발생하며 어플리케이션은 강제 종료된다.
+      * 'PlayerActivity.java' 에도 cubrid와 연결하는 함수가 2개 있다. (void count(), void cubrid()) 모두 수정해주어야 한다.
+      */
     void cubrid() {
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
+
                     Class.forName("cubrid.jdbc.driver.CUBRIDDriver");
                     String jdbcUrl = "jdbc:cubrid:172.30.1.48:30000:sample:::?charset=UTF-8";
 
@@ -304,6 +316,7 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
         }).start();
     }
 
+    // 동작이 수행되는 동안 dialog 표시
     public Handler mhandler = new Handler();
     public void progressBarDialog() {
         progressDialog = new ProgressDialog(MenuActivity.this);

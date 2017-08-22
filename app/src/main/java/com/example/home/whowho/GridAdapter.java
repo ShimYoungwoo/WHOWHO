@@ -17,8 +17,8 @@ import android.widget.TextView;
 
 /**
  * Created by YUNA on 2017-06-26.
- *             YUUUUU on 2017-08-13.
- *             s0woo on 2017-08-16.
+ *            YUUUUU on 2017-08-13.
+ *            s0woo on 2017-08-16.
  */
 
 public class GridAdapter extends BaseAdapter {
@@ -86,6 +86,7 @@ public class GridAdapter extends BaseAdapter {
         viewHolder.checkBox.setChecked(mSelectedItemsIds.get(i));
 
         if(arrayList[i][0]!=null){
+            //arrayList[i][2]번째의 값에 따라 나라 국기 다르게 표현
             if(arrayList[i][2].equalsIgnoreCase("Albania")) {
                 viewHolder.country.setImageResource(R.drawable.flag_albania);
             }
@@ -190,10 +191,7 @@ public class GridAdapter extends BaseAdapter {
         });
 
         return view;
-
-
     }
-
 
 
     private class ViewHolder {
@@ -218,23 +216,25 @@ public class GridAdapter extends BaseAdapter {
 
         String overlap;
 
+        //checkBox에 체크가 된다면
         if (value){
-            System.out.println(position + "에 체크가 되었단다");
+            //System.out.println(position + "에 체크가 되었단다");
             mSelectedItemsIds.put(position, true);
-            System.out.println("array ::::::" + arrayList[position][0]);
+            //System.out.println("array ::::::" + arrayList[position][0]);
 
             c.moveToFirst();
-            if(c.getCount() != 0) {
 
+            //bookmark DB에 어떠한 내용이라도 존재한다면 그 내용과 checkBox 눌려진 내용과 같은 내용이 DB이 존재하는지 중복체크
+            if(c.getCount() != 0) {
                 String dbName = c.getString(c.getColumnIndex("name"));
                 String dbSport = c.getString(c.getColumnIndex("sport"));
                 String dbNation = c.getString(c.getColumnIndex("nation"));
-                System.out.println("position + " + position);
-                System.out.println("db내용물 ### : " + dbName + " " + dbSport + " " + dbNation);
-                System.out.println(arrayList[position][0] + " " + arrayList[position][1] + " " + arrayList[position][2]);
+                //System.out.println("position + " + position);
+                //System.out.println("db내용물 ### : " + dbName + " " + dbSport + " " + dbNation);
+                //System.out.println(arrayList[position][0] + " " + arrayList[position][1] + " " + arrayList[position][2]);
 
                 if(dbName.equals(arrayList[position][0]) && dbSport.equals(arrayList[position][1]) && dbNation.equals(arrayList[position][2])) {
-                    System.out.println("첫번째 중복있음");
+                    //System.out.println("첫번째 중복있음");
                     overlap = "yes";
                 }
                 else {
@@ -247,11 +247,11 @@ public class GridAdapter extends BaseAdapter {
                         dbSport = c.getString(c.getColumnIndex("sport"));
                         dbNation = c.getString(c.getColumnIndex("nation"));
 
-                        System.out.println("db내용물 ### : " + dbName + " " + dbSport + " " + dbNation);
-                        System.out.println(arrayList[position][0] + " " + arrayList[position][1] + " " + arrayList[position][2]);
+                        //System.out.println("db내용물 ### : " + dbName + " " + dbSport + " " + dbNation);
+                        //System.out.println(arrayList[position][0] + " " + arrayList[position][1] + " " + arrayList[position][2]);
 
                         if (dbName.equals(arrayList[position][0]) && dbSport.equals(arrayList[position][1]) && dbNation.equals(arrayList[position][2])) {
-                            System.out.println("중복있음");
+                            //System.out.println("중복있음");
                             overlap = "yes";
                             break;
                         } else {
@@ -262,13 +262,13 @@ public class GridAdapter extends BaseAdapter {
 
                 if(overlap.equals("no")) {
                     if(!arrayList[position][0].equals(null)) {
-                        System.out.println("overlap : " + overlap);
+                        //System.out.println("overlap : " + overlap);
                         bookmark.insert(arrayList[position][0], arrayList[position][1], arrayList[position][2]);
                     }
                 }
             }
             else {
-                System.out.println("db 내용물 없어서 내용 입력");
+                //System.out.println("db 내용물 없어서 내용 입력");
                 if(!arrayList[position][0].equals(null)) {
                     bookmark.insert(arrayList[position][0], arrayList[position][1], arrayList[position][2]);
                 }
@@ -278,8 +278,9 @@ public class GridAdapter extends BaseAdapter {
             System.out.println("*******db \n" + result);
 
         }
+        //checkBox에 체크가 해제된다면 DB에서 내용삭제
         else{
-            System.out.println(position + "에 체크는 개뿔");
+            //System.out.println(position + "에 체크는 개뿔");
             mSelectedItemsIds.delete(position);
             bookmark.delete(arrayList[position][0], arrayList[position][1], arrayList[position][2]);
             String result = bookmark.getResult();
