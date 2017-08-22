@@ -1,10 +1,12 @@
 package com.example.home.whowho;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.SparseBooleanArray;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -38,6 +40,8 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
     DBbookmark bookmark = new DBbookmark(MenuActivity.this, "Bookmark.db", null, 1);
     SQLiteDatabase dbBM;
 
+    public ProgressDialog progressDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,40 +59,60 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        ListView listView = (ListView) findViewById(R.id.listView);
+        final ListView listView = (ListView) findViewById(R.id.listView);
 
         dbBM = bookmark.getWritableDatabase();
         bookmark.onCreate(dbBM);
         final Cursor c = dbBM.query("Bookmark", null, null, null, null, null, null);
 
-        //checkAvalialbleConnection();
-        //String ip = GetLocalIpAddress();
-        //System.out.println("IP주소 : " + ip);
-
         cubrid();
-
 
         context = this;
         adapter = new GridAdapter(context, st, true);
+
         listView.setAdapter(adapter);
 
         tmp = adapter.getSelectedIds();
 
+    }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        dbBM = bookmark.getWritableDatabase();
+        bookmark.onCreate(dbBM);
+        final Cursor c = dbBM.query("Bookmark", null, null, null, null, null, null);
+
+        context = this;
+        adapter = new GridAdapter(context, st, true);
+
+        final ListView listView = (ListView) findViewById(R.id.listView);
+        listView.setAdapter(adapter);
+
+        tmp = adapter.getSelectedIds();
+
+        progressBarDialog();
+
         android.os.Handler handler = new android.os.Handler();
         handler.postDelayed(new Runnable(){
             public void run() {
+                adapter.notifyDataSetChanged();
                 for(int i=0; i<114; i++) {
                     if(c.getCount() == 0) {
                         System.out.println("db내용 없음");
                         adapter.checkCheckBox(i,false);
                         break;
                     }
+
                     c.moveToFirst();
                     String dbName = c.getString(c.getColumnIndex("name"));
                     String dbSport = c.getString(c.getColumnIndex("sport"));
                     String dbNation = c.getString(c.getColumnIndex("nation"));
-                    //System.out.println("**Db check : " + dbName + " " + dbSport + dbNation);
-                    //System.out.println("st 내용    : " + st[i][0] + " " + st[i][1] + " " + st[i][2]);
+                    System.out.println("**Db check : " + dbName + " " + dbSport + dbNation);
+                    System.out.println("st 내용    : " + st[i][0] + " " + st[i][1] + " " + st[i][2]);
+
                     if(dbName.equals(st[i][0]) && dbSport.equals(st[i][1]) && dbNation.equals(st[i][2])) {
                         System.out.println("i" + i);
                         adapter.checkCheckBox(i,true);
@@ -98,8 +122,8 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
                         dbName = c.getString(c.getColumnIndex("name"));
                         dbSport = c.getString(c.getColumnIndex("sport"));
                         dbNation = c.getString(c.getColumnIndex("nation"));
-                        //System.out.println("**Db check : " + dbName + " " + dbSport + dbNation);
-                        //System.out.println("st 내용    : " + st[i][0] + " " + st[i][1] + " " + st[i][2]);
+                        System.out.println("**Db check : " + dbName + " " + dbSport + dbNation);
+                        System.out.println("st 내용    : " + st[i][0] + " " + st[i][1] + " " + st[i][2]);
                         if(dbName.equals(st[i][0]) && dbSport.equals(st[i][1]) && dbNation.equals(st[i][2])) {
                             System.out.println("i" + i);
                             adapter.checkCheckBox(i,true);
@@ -107,9 +131,10 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
                     }
                 }
             }
-        }, 1000);
+        }, 1500);
 
     }
+
 
 
     @Override
@@ -243,7 +268,7 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
             public void run() {
                 try {
                     Class.forName("cubrid.jdbc.driver.CUBRIDDriver");
-                    String jdbcUrl = "jdbc:cubrid:192.168.0.9:30000:sample:::?charset=UTF-8";
+                    String jdbcUrl = "jdbc:cubrid:172.30.1.48:30000:sample:::?charset=UTF-8";
 
                     conn = DriverManager.getConnection(jdbcUrl, "dba", "1234");
 
@@ -279,49 +304,29 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
         }).start();
     }
 
-    /*
-    void checkAvalialbleConnection() {
-        ConnectivityManager connMgr = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
+    public Handler mhandler = new Handler();
+    public void progressBarDialog() {
+        progressDialog = new ProgressDialog(MenuActivity.this);
 
-        final android.net.NetworkInfo wifi = connMgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-        final android.net.NetworkInfo mobile = connMgr.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+        progressDialog.setMessage("선수를 찾고 있습니다.");
+        progressDialog.setProgressStyle(progressDialog.STYLE_SPINNER);
+        //progressDialog.setProgress(0);
+        progressDialog.show();
 
-        if(wifi.isAvailable()) {
-            WifiManager myWifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
-            WifiInfo myWifiInfo = myWifiManager.getConnectionInfo();
-            int ipAddress = myWifiInfo.getIpAddress();
-            System.out.println("Wifi address is " + android.text.format.Formatter.formatIpAddress(ipAddress));
-        } else if (mobile.isAvailable()) {
-            GetLocalIpAddress();
-            Toast.makeText(this, "3G avaliable", Toast.LENGTH_LONG).show();
-        } else {
-            Toast.makeText(this, "No Network Avaliable", Toast.LENGTH_LONG).show();
-        }
-    }
-
-    public String GetLocalIpAddress() {
-        try {
-            Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces();
-            while(en.hasMoreElements()) {
-                NetworkInterface interf = en.nextElement();
-
-            }
-            for( en.hasMoreElements();) {
-                NetworkInterface intf = en.nextElement();
-                for(Enumeration<InetAddress> enumIpAddr = intf
-                        .getInetAddresses(); enumIpAddr.hasMoreElements();) {
-                    InetAddress inetAddress = enumIpAddr.nextElement();
-                    if(!inetAddress.isLoopbackAddress()) {
-                        return inetAddress.getHostAddress().toString();
+        mhandler.postDelayed( new Runnable() {
+            @Override public void run() {
+                try {
+                    if (progressDialog!=null&&progressDialog.isShowing()) {
+                        progressDialog.dismiss();
                     }
                 }
+                catch ( Exception e ) {
+                    e.printStackTrace();
+                }
             }
-        } catch (SocketException e) {
-            return "Error Obtaining IP";
-        }
-        return "NO IP Avaliable";
+        }, 1500);
     }
-    */
+
 }
 
 

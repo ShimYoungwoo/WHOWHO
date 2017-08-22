@@ -11,6 +11,7 @@ import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * Created by s0woo on 2017-08-20.
@@ -161,7 +162,7 @@ public class GridAdapter_Bookmark extends BaseAdapter {
         viewHolder.player.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                checkCheckBox(i, !mSelectedItemsIds.get(i));
+                //checkCheckBox(i, !mSelectedItemsIds.get(i));
                 //System.out.println("checkNum : " + i + " - " + mSelectedItemsIds.get(i));
                 cntCheck[i] = mSelectedItemsIds.get(i);
             }
@@ -170,7 +171,7 @@ public class GridAdapter_Bookmark extends BaseAdapter {
         viewHolder.data.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                checkCheckBox(i, !mSelectedItemsIds.get(i));
+                //checkCheckBox(i, !mSelectedItemsIds.get(i));
                 // System.out.println("checkNum : " + i + " - " + mSelectedItemsIds.get(i));
                 cntCheck[i] = mSelectedItemsIds.get(i);
             }
@@ -179,7 +180,7 @@ public class GridAdapter_Bookmark extends BaseAdapter {
         viewHolder.country.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                checkCheckBox(i, !mSelectedItemsIds.get(i));
+                //checkCheckBox(i, !mSelectedItemsIds.get(i));
                 System.out.println("checkNum : " + i + " - " + mSelectedItemsIds.get(i));
                 cntCheck[i] = mSelectedItemsIds.get(i);
             }
@@ -187,9 +188,7 @@ public class GridAdapter_Bookmark extends BaseAdapter {
 
         return view;
 
-
     }
-
 
 
     private class ViewHolder {
@@ -213,26 +212,12 @@ public class GridAdapter_Bookmark extends BaseAdapter {
         Cursor c = dbBM.query("Bookmark", null, null, null, null, null, null);
 
         if (value){
-            System.out.println(position + "에 체크가 되었단다 = 체크해제 ");
+            //System.out.println(position + "에 체크가 되었단다 = 체크해제 ");
+
+            Toast.makeText(this.context, "화면을 위로 당겨 새로고침 후 잠시만 기다려주세요", Toast.LENGTH_LONG).show();
+
             //db삭제
             mSelectedItemsIds.put(position, true);
-
-
-            String[][] tmp = new String[arrayList.length][3];
-
-            for(int i=0; i < arrayList.length; i++) {
-                tmp[i][0] = arrayList[i][0];
-                tmp[i][1] = arrayList[i][1];
-                tmp[i][2] = arrayList[i][2];
-            }
-
-            /*
-            배열 줄이기
-            for(int t = position; t<arrayList.length; t++) {
-                arrayList[t][0] = tmp[t+1][0];
-                arrayList[t][1] = tmp[t+1][1];
-                arrayList[t][2] = tmp[t+1][2];
-            }*/
 
             mSelectedItemsIds.delete(position);
             bookmark.delete(arrayList[position][0], arrayList[position][1], arrayList[position][2]);

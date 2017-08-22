@@ -1,6 +1,7 @@
 package com.example.home.whowho;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -27,7 +28,6 @@ import static com.example.home.whowho.R.id.listView;
 public class PlayerActivity extends Activity {
 
     String[][] st;
-    //String[][] st;
     private Context context;
     private GridAdapter adapter;
     SparseBooleanArray tmp;
@@ -38,6 +38,8 @@ public class PlayerActivity extends Activity {
 
     String country, sport;
     int cnt;
+
+    public ProgressDialog progressDialog;
 
     DBbookmark bookmark = new DBbookmark(PlayerActivity.this, "Bookmark.db", null, 1);
     SQLiteDatabase dbBM;
@@ -50,12 +52,19 @@ public class PlayerActivity extends Activity {
         sport = getIntent().getStringExtra("sport");
         System.out.println("country : " + country + " sport : " + sport);
 
+    }
+
+    public void onResume() {
+        super.onResume();
+
         final ListView listView = (ListView) findViewById(R.id.playerlistview);
         context = this;
 
         dbBM = bookmark.getWritableDatabase();
         bookmark.onCreate(dbBM);
         final Cursor c = dbBM.query("Bookmark", null, null, null, null, null, null);
+
+        progressBarDialog();
 
         Handler handler = new Handler();
         handler.postDelayed(new Runnable(){
@@ -67,8 +76,6 @@ public class PlayerActivity extends Activity {
                 h1.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-
-                        System.out.println("listnum " + cnt);
 
                         if(cnt==0) {
                             st = new String[1][3];
@@ -82,10 +89,9 @@ public class PlayerActivity extends Activity {
                         h2.postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                System.out.println("#########88# name : " + st[0][0] + " sport : " + st[0][1] + " nation : " + st[0][2]);
+                                //System.out.println("#########88# name : " + st[0][0] + " sport : " + st[0][1] + " nation : " + st[0][2]);
                                 if(st[0][0] == null) {
                                     st[0][0] = "해당 조건의 선수가 없습니다.";
-                                    st[0][1] = ".";
                                     st[0][2] = "No";
                                 }
                                 adapter = new GridAdapter(context, st, true);
@@ -101,7 +107,7 @@ public class PlayerActivity extends Activity {
                                     String dbName = c.getString(c.getColumnIndex("name"));
                                     String dbSport = c.getString(c.getColumnIndex("sport"));
                                     String dbNation = c.getString(c.getColumnIndex("nation"));
-                                    //System.out.println("**Db check : " + dbName + " " + dbSport + dbNation);
+                                    System.out.println("**Db check : " + dbName + " " + dbSport + " " + dbNation);
                                     if(dbName.equals(st[i][0]) && dbSport.equals(st[i][1]) && dbNation.equals(st[i][2])) {
                                         System.out.println("i" + i);
                                         adapter.checkCheckBox(i,true);
@@ -126,7 +132,8 @@ public class PlayerActivity extends Activity {
                     }
                 }, 1500);
             }
-        }, 1000);
+        }, 1500);
+
     }
 
 
@@ -137,18 +144,31 @@ public class PlayerActivity extends Activity {
             public void run() {
                 try {
                     Class.forName("cubrid.jdbc.driver.CUBRIDDriver");
-                    String jdbcUrl = "jdbc:cubrid:192.168.0.9:30000:sample:::?charset=UTF-8";
+                    String jdbcUrl = "jdbc:cubrid:172.30.1.48:30000:sample:::?charset=UTF-8";
 
                     conn = DriverManager.getConnection(jdbcUrl, "dba", "1234");
 
-                    String sql = "SELECT name, sport, nation FROM info WHERE nation = \'" + country + "\' AND sport = \'" + sport + "\'";
-                    System.out.println("sql ******* " + sql);
-                    stmt = conn.createStatement();
-                    rs = stmt.executeQuery(sql);
+                    if(country.equals("All country")) {
+                        String sql = "SELECT name, sport, nation FROM info WHERE sport = \'" + sport + "\'";
+                        System.out.println("sql ******* " + sql);
+                        stmt = conn.createStatement();
+                        rs = stmt.executeQuery(sql);
 
-                    while (rs.next()) {
-                        cnt++;
-                        System.out.println("############################ cnt" + cnt);
+                        while (rs.next()) {
+                            cnt++;
+                            System.out.println("############################ cnt" + cnt);
+                        }
+                    }
+                    else {
+                        String sql = "SELECT name, sport, nation FROM info WHERE nation = \'" + country + "\' AND sport = \'" + sport + "\'";
+                        System.out.println("sql ******* " + sql);
+                        stmt = conn.createStatement();
+                        rs = stmt.executeQuery(sql);
+
+                        while (rs.next()) {
+                            cnt++;
+                            System.out.println("############################ cnt" + cnt);
+                        }
                     }
 
                     rs.close();
@@ -173,18 +193,25 @@ public class PlayerActivity extends Activity {
             public void run() {
                 try {
                     Class.forName("cubrid.jdbc.driver.CUBRIDDriver");
-                    String jdbcUrl = "jdbc:cubrid:192.168.0.9:30000:sample:::?charset=UTF-8";
+                    String jdbcUrl = "jdbc:cubrid:172.30.1.48:30000:sample:::?charset=UTF-8";
 
                     conn = DriverManager.getConnection(jdbcUrl, "dba", "1234");
 
-                    String sql = "SELECT name, sport, nation FROM info WHERE nation = \'" + country + "\' AND sport = \'" + sport + "\'";
-                    System.out.println("sql ******* " + sql);
-                    stmt = conn.createStatement();
-                    rs = stmt.executeQuery(sql);
-                    //System.out.println("=====================================================");
+                    if(country.equals("All country")) {
+                        String sql = "SELECT name, sport, nation FROM info WHERE sport = \'" + sport + "\'";
+                        System.out.println("sql ******* " + sql);
+                        stmt = conn.createStatement();
+                        rs = stmt.executeQuery(sql);
+                    }
+                    else {
+                        String sql = "SELECT name, sport, nation FROM info WHERE nation = \'" + country + "\' AND sport = \'" + sport + "\'";
+                        System.out.println("sql ******* " + sql);
+                        stmt = conn.createStatement();
+                        rs = stmt.executeQuery(sql);
+                    }
 
                     int i = 0;
-                    while (rs.next()) {
+                     while (rs.next()) {
                         st[i][0] = rs.getString("name");
                         String cubrid_name = rs.getString("name");
                         st[i][1] = rs.getString("sport");
@@ -208,6 +235,29 @@ public class PlayerActivity extends Activity {
                 }
             }
         }).start();
+    }
+
+    public Handler mhandler = new Handler();
+    public void progressBarDialog() {
+        progressDialog = new ProgressDialog(PlayerActivity.this);
+
+        progressDialog.setMessage("선수를 찾고 있습니다.");
+        progressDialog.setProgressStyle(progressDialog.STYLE_SPINNER);
+        //progressDialog.setProgress(0);
+        progressDialog.show();
+
+        mhandler.postDelayed( new Runnable() {
+            @Override public void run() {
+                try {
+                    if (progressDialog!=null&&progressDialog.isShowing()) {
+                        progressDialog.dismiss();
+                    }
+                }
+                catch ( Exception e ) {
+                    e.printStackTrace();
+                }
+            }
+        }, 4500);
     }
 
 }

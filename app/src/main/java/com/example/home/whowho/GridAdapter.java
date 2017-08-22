@@ -153,7 +153,6 @@ public class GridAdapter extends BaseAdapter {
         }
 
 
-
         viewHolder.checkBox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -166,7 +165,7 @@ public class GridAdapter extends BaseAdapter {
         viewHolder.player.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                checkCheckBox(i, !mSelectedItemsIds.get(i));
+                //checkCheckBox(i, !mSelectedItemsIds.get(i));
                 //System.out.println("checkNum : " + i + " - " + mSelectedItemsIds.get(i));
                 cntCheck[i] = mSelectedItemsIds.get(i);
             }
@@ -175,7 +174,7 @@ public class GridAdapter extends BaseAdapter {
         viewHolder.data.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                checkCheckBox(i, !mSelectedItemsIds.get(i));
+                //checkCheckBox(i, !mSelectedItemsIds.get(i));
                 // System.out.println("checkNum : " + i + " - " + mSelectedItemsIds.get(i));
                 cntCheck[i] = mSelectedItemsIds.get(i);
             }
@@ -184,8 +183,8 @@ public class GridAdapter extends BaseAdapter {
         viewHolder.country.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                checkCheckBox(i, !mSelectedItemsIds.get(i));
-                System.out.println("checkNum : " + i + " - " + mSelectedItemsIds.get(i));
+                //checkCheckBox(i, !mSelectedItemsIds.get(i));
+                //System.out.println("checkNum : " + i + " - " + mSelectedItemsIds.get(i));
                 cntCheck[i] = mSelectedItemsIds.get(i);
             }
         });
@@ -277,6 +276,7 @@ public class GridAdapter extends BaseAdapter {
 
             String result = bookmark.getResult();
             System.out.println("*******db \n" + result);
+
         }
         else{
             System.out.println(position + "에 체크는 개뿔");

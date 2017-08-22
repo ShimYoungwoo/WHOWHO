@@ -23,10 +23,11 @@ import android.widget.Toast;
 
 public class FlagListActivity extends Activity{
 
-    private static int COUNTRY_NUM= 19; //참여국 전체 개수
+    private static int COUNTRY_NUM= 20; //참여국 전체 개수
 
     //참여국 나라 배열
     String[] countries = new String[] {
+            "All country",
             "Albania",
             "Andorra",
             "Argentina",
@@ -50,6 +51,7 @@ public class FlagListActivity extends Activity{
 
     //참여국 국기 이미지 배열
     int[] flags = new int[]{
+            R.drawable.flag_all,
             R.drawable.flag_albania,
             R.drawable.flag_andorra,
             R.drawable.flag_argen,
@@ -107,8 +109,7 @@ public class FlagListActivity extends Activity{
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
-                Toast.makeText(FlagListActivity.this, countries[position] + "",
-                        Toast.LENGTH_SHORT).show();
+                //Toast.makeText(FlagListActivity.this, countries[position] + "", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(FlagListActivity.this, PlayerActivity.class);
                 String sport = getIntent().getStringExtra("sport");
                 intent.putExtra("country",countries[position]);
