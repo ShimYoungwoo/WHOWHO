@@ -271,6 +271,7 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
       * cmd창에서 'ipconfig /all' 명령어를 수행하고 LAN(혹은 무선 WIFI)의 IPv4 주소를 '172.30.1.48' 위치에 입력하여야 한다.
       * IPv4 주소가 잘못될경우 에러가 발생하며 어플리케이션은 강제 종료된다.
       * 'PlayerActivity.java' 에도 cubrid와 연결하는 함수가 2개 있다. (void count(), void cubrid()) 모두 수정해주어야 한다.
+      * 'PlayerDetailActivity.java' 에도 cubrid와 연결하는 함수가 1개 있다. (oid cubrid()) 수정해주어야 한다.
       */
     void cubrid() {
         new Thread(new Runnable() {
@@ -279,7 +280,7 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
                 try {
 
                     Class.forName("cubrid.jdbc.driver.CUBRIDDriver");
-                    String jdbcUrl = "jdbc:cubrid:192.168.0.6:30000:sample:::?charset=UTF-8";
+                    String jdbcUrl = "jdbc:cubrid:192.168.0.9:30000:sample:::?charset=UTF-8";
 
                     conn = DriverManager.getConnection(jdbcUrl, "dba", "1234");
 

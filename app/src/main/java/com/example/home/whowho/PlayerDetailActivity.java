@@ -112,7 +112,7 @@ public class PlayerDetailActivity extends Activity {
                 try {
 
                     Class.forName("cubrid.jdbc.driver.CUBRIDDriver");
-                    String jdbcUrl = "jdbc:cubrid:192.168.0.6:30000:sample:::?charset=UTF-8";
+                    String jdbcUrl = "jdbc:cubrid:192.168.0.9:30000:sample:::?charset=UTF-8";
 
                     conn = DriverManager.getConnection(jdbcUrl, "dba", "1234");
 
