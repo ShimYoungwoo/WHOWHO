@@ -8,6 +8,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
 
     <application
@@ -37,6 +38,7 @@
         </activity>
         <activity android:name=".BookmarkActivity">
         </activity>
+        <activity android:name=".PlayerDetailActivity" android:theme="@android:style/Theme.Dialog"  />
 
     </application>
 

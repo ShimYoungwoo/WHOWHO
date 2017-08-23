@@ -2,6 +2,7 @@ package com.example.home.whowho;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatCallback;
@@ -167,6 +168,7 @@ public class GridAdapter extends BaseAdapter {
             @Override
             public void onClick(View v) {
                 //checkCheckBox(i, !mSelectedItemsIds.get(i));
+                detailView(i, !mSelectedItemsIds.get(i));
                 //System.out.println("checkNum : " + i + " - " + mSelectedItemsIds.get(i));
                 cntCheck[i] = mSelectedItemsIds.get(i);
             }
@@ -176,6 +178,7 @@ public class GridAdapter extends BaseAdapter {
             @Override
             public void onClick(View v) {
                 //checkCheckBox(i, !mSelectedItemsIds.get(i));
+                detailView(i, !mSelectedItemsIds.get(i));
                 // System.out.println("checkNum : " + i + " - " + mSelectedItemsIds.get(i));
                 cntCheck[i] = mSelectedItemsIds.get(i);
             }
@@ -300,5 +303,11 @@ public class GridAdapter extends BaseAdapter {
         return cntCheck;
     }
 
-
+    public void detailView(int position, boolean value) {
+        Intent intent = new Intent(this.context, PlayerDetailActivity.class);
+        intent.putExtra("name", arrayList[position][0]);
+        intent.putExtra("sport", arrayList[position][1]);
+        intent.putExtra("nation", arrayList[position][2]);
+        context.startActivity(intent);
+    }
 }

@@ -55,8 +55,8 @@ public class PlayerActivity extends Activity {
 
     }
 
-    public void onResume() {
-        super.onResume();
+    public void onStart() {
+        super.onStart();
 
         final ListView listView = (ListView) findViewById(R.id.playerlistview);
         context = this;
@@ -149,7 +149,7 @@ public class PlayerActivity extends Activity {
             public void run() {
                 try {
                     Class.forName("cubrid.jdbc.driver.CUBRIDDriver");
-                    String jdbcUrl = "jdbc:cubrid:172.30.1.48:30000:sample:::?charset=UTF-8";
+                    String jdbcUrl = "jdbc:cubrid:192.168.0.6:30000:sample:::?charset=UTF-8";
 
                     conn = DriverManager.getConnection(jdbcUrl, "dba", "1234");
 
@@ -201,7 +201,7 @@ public class PlayerActivity extends Activity {
             public void run() {
                 try {
                     Class.forName("cubrid.jdbc.driver.CUBRIDDriver");
-                    String jdbcUrl = "jdbc:cubrid:172.30.1.48:30000:sample:::?charset=UTF-8";
+                    String jdbcUrl = "jdbc:cubrid:192.168.0.6:30000:sample:::?charset=UTF-8";
 
                     conn = DriverManager.getConnection(jdbcUrl, "dba", "1234");
 

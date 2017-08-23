@@ -48,7 +48,7 @@ public class BookmarkActivity extends AppCompatActivity {
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                onResume();
+                onStart();
                 //새로고침 아이콘 해제
                 swipeContainer.setRefreshing(false);
             }
@@ -58,8 +58,8 @@ public class BookmarkActivity extends AppCompatActivity {
 
     //화면이 보여질 때 마다 다음 함수 실행
     @Override
-    public void onResume() {
-        super.onResume();
+    public void onStart() {
+        super.onStart();
 
         final ListView listView = (ListView) findViewById(R.id.bookmarkView);
         context = this;

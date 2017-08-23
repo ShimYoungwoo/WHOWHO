@@ -81,8 +81,8 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
 
     //화면이 실행될 때 마다 다음 함수 실행
     @Override
-    public void onResume() {
-        super.onResume();
+    public void onStart() {
+        super.onStart();
 
         dbBM = bookmark.getWritableDatabase();
         bookmark.onCreate(dbBM);
@@ -138,7 +138,6 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
         }, 1500);
 
     }
-
 
 
     @Override
@@ -280,7 +279,7 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
                 try {
 
                     Class.forName("cubrid.jdbc.driver.CUBRIDDriver");
-                    String jdbcUrl = "jdbc:cubrid:172.30.1.48:30000:sample:::?charset=UTF-8";
+                    String jdbcUrl = "jdbc:cubrid:192.168.0.6:30000:sample:::?charset=UTF-8";
 
                     conn = DriverManager.getConnection(jdbcUrl, "dba", "1234");
 
