@@ -105,7 +105,7 @@ public class PlayerDetailActivity extends Activity {
         //안드로이드 백버튼 막기
         return;
     }
-    
+
     /*** 외부 DB인 cubrid 실행 ***
      * MenuActivity.java의 void cubrid()에 적혀있는 주석 참고
      */
@@ -116,7 +116,7 @@ public class PlayerDetailActivity extends Activity {
                 try {
 
                     Class.forName("cubrid.jdbc.driver.CUBRIDDriver");
-                    String jdbcUrl = "jdbc:cubrid:172.21.137.120:30000:sample:::?charset=UTF-8";
+                    String jdbcUrl = "jdbc:cubrid:192.168.0.9:30000:sample:::?charset=UTF-8";
 
                     conn = DriverManager.getConnection(jdbcUrl, "dba", "1234");
 

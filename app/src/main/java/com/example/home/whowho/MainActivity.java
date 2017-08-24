@@ -24,15 +24,15 @@ public class MainActivity extends AppCompatActivity {
         btn_search = (ImageButton) findViewById(R.id.btn_search);
         btn_alram = (ImageButton) findViewById(R.id.btn_alram);
         btn_qna = (ImageButton) findViewById(R.id.btn_qna);
-        /*
+
         btn_cam.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, CamActivity.class);
+                Intent intent = new Intent(MainActivity.this, CameraActivity.class);
                 startActivity(intent);
             }
         });
-*/
+
         btn_search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
