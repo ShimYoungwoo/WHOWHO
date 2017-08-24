@@ -139,7 +139,7 @@ public class GridAdapter extends BaseAdapter {
             else if(arrayList[i][2].equalsIgnoreCase("Korea")){
                 viewHolder.country.setImageResource(R.drawable.flag_korea);
             }
-            else if(arrayList[i][2].equalsIgnoreCase("Luxembroug")){
+            else if(arrayList[i][2].equalsIgnoreCase("Luxembourg")){
                 viewHolder.country.setImageResource(R.drawable.flag_luxembourg);
             }
             else if(arrayList[i][2].equalsIgnoreCase("Malaysia")){
@@ -188,6 +188,7 @@ public class GridAdapter extends BaseAdapter {
             @Override
             public void onClick(View v) {
                 //checkCheckBox(i, !mSelectedItemsIds.get(i));
+                detailView(i, !mSelectedItemsIds.get(i));
                 //System.out.println("checkNum : " + i + " - " + mSelectedItemsIds.get(i));
                 cntCheck[i] = mSelectedItemsIds.get(i);
             }

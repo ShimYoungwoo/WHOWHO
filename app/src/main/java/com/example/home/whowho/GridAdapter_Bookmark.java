@@ -1,6 +1,7 @@
 package com.example.home.whowho;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.SparseBooleanArray;
@@ -134,7 +135,7 @@ public class GridAdapter_Bookmark extends BaseAdapter {
             else if(arrayList[i][2].equalsIgnoreCase("Korea")){
                 viewHolder.country.setImageResource(R.drawable.flag_korea);
             }
-            else if(arrayList[i][2].equalsIgnoreCase("Luxembroug")){
+            else if(arrayList[i][2].equalsIgnoreCase("Luxembourg")){
                 viewHolder.country.setImageResource(R.drawable.flag_luxembourg);
             }
             else if(arrayList[i][2].equalsIgnoreCase("Malaysia")){
@@ -163,6 +164,7 @@ public class GridAdapter_Bookmark extends BaseAdapter {
             @Override
             public void onClick(View v) {
                 //checkCheckBox(i, !mSelectedItemsIds.get(i));
+                detailView(i, !mSelectedItemsIds.get(i));
                 //System.out.println("checkNum : " + i + " - " + mSelectedItemsIds.get(i));
                 cntCheck[i] = mSelectedItemsIds.get(i);
             }
@@ -172,6 +174,7 @@ public class GridAdapter_Bookmark extends BaseAdapter {
             @Override
             public void onClick(View v) {
                 //checkCheckBox(i, !mSelectedItemsIds.get(i));
+                detailView(i, !mSelectedItemsIds.get(i));
                 // System.out.println("checkNum : " + i + " - " + mSelectedItemsIds.get(i));
                 cntCheck[i] = mSelectedItemsIds.get(i);
             }
@@ -181,6 +184,7 @@ public class GridAdapter_Bookmark extends BaseAdapter {
             @Override
             public void onClick(View v) {
                 //checkCheckBox(i, !mSelectedItemsIds.get(i));
+                detailView(i, !mSelectedItemsIds.get(i));
                 System.out.println("checkNum : " + i + " - " + mSelectedItemsIds.get(i));
                 cntCheck[i] = mSelectedItemsIds.get(i);
             }
@@ -240,6 +244,14 @@ public class GridAdapter_Bookmark extends BaseAdapter {
 
     public boolean[] getCntCheck(){
         return cntCheck;
+    }
+
+    public void detailView(int position, boolean value) {
+        Intent intent = new Intent(this.context, PlayerDetailActivity.class);
+        intent.putExtra("name", arrayList[position][0]);
+        intent.putExtra("sport", arrayList[position][1]);
+        intent.putExtra("nation", arrayList[position][2]);
+        context.startActivity(intent);
     }
 
 

@@ -66,14 +66,15 @@ public class PlayerDetailActivity extends Activity {
                 txtTime.setText(time);
 
                 if(buffer == null) {
-                    System.out.println("************byte array : null");
+                    //System.out.println("************byte array : null");
                     //cubrid DB에 사진이 등록되지 않은 사람이라면 기본사진으로 설정
                     ImageView imgPic = (ImageView)findViewById(R.id.viewPicture);
                     imgPic.setImageResource(R.drawable.no_player);
                 }
                 else {
-                    System.out.println("************byte array : " + buffer.length);
+                    //System.out.println("************byte array : " + buffer.length);
                     //cubrid DB에 사진이 등록된 사람이라면 그 사람의 사진을 보여줌
+                    //byte[]를 bitMap으로 변환하고 bitMap을 imageView에 출력
                     bmp = BitmapFactory.decodeByteArray(buffer,0, buffer.length);
 
                     ImageView imgPic = (ImageView)findViewById(R.id.viewPicture);
@@ -104,7 +105,10 @@ public class PlayerDetailActivity extends Activity {
         //안드로이드 백버튼 막기
         return;
     }
-
+    
+    /*** 외부 DB인 cubrid 실행 ***
+     * MenuActivity.java의 void cubrid()에 적혀있는 주석 참고
+     */
     void cubrid() {
         new Thread(new Runnable() {
             @Override
@@ -112,25 +116,28 @@ public class PlayerDetailActivity extends Activity {
                 try {
 
                     Class.forName("cubrid.jdbc.driver.CUBRIDDriver");
-                    String jdbcUrl = "jdbc:cubrid:192.168.0.9:30000:sample:::?charset=UTF-8";
+                    String jdbcUrl = "jdbc:cubrid:172.21.137.120:30000:sample:::?charset=UTF-8";
 
                     conn = DriverManager.getConnection(jdbcUrl, "dba", "1234");
 
+                    // Cubrid DB에 사진이 등록되어 있는 사람이라면 사진 정보와 경기 시간 정보를 모두 받아옴
                     if(name.equals("심영우") || name.equals("유아정") || name.equals("조유나")) {
                         String sql = "SELECT picture, playtime FROM info WHERE name = \'" + name + "\' AND nation = \'" + nation + "\' AND sport = \'" + sport + "\' LIMIT 1";
 
                         stmt = conn.createStatement();
                         rs = stmt.executeQuery(sql);
-                        System.out.println("sql=============== : " + sql);
+                        //System.out.println("sql=============== : " + sql);
 
                         if(rs.next()) {
                             time = rs.getString("playtime");
+                            //Blob 형식으로 DB에 저장되어 있는 정보를 받아와 byte[]에 대입
                             Blob blob = rs.getBlob("picture");
                             buffer = blob.getBytes(1, (int)blob.length());
-                            System.out.println("@@@@@@@@@@@@@@@@@@@@@2" + time + " " + buffer.length);
+                            //System.out.println("@@@@@@@@@@@@@@@@@@@@@2" + time + " " + buffer.length);
                         }
 
                     }
+                    // Cubrid DB에 사진이 등록되어 있는 사람이 아니라면경기 시간 정보만 받아옴
                     else {
                         String sql = "SELECT playtime FROM info WHERE name = \'" + name + "\' AND nation = \'" + nation + "\' AND sport = \'" + sport + "\' LIMIT 1";
 

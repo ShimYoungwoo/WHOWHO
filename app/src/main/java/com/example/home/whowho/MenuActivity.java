@@ -264,14 +264,14 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
     }
 
      /*** 외부 DB인 cubrid 실행 ***
-      * String jdbcUrl의 172.30.1.48은 현재 큐브리드가 설치된 컴퓨터(노트북)와 연결된 LAN(혹은 무선 WIFI)의 IPv4 주소이며,
+      * String jdbcUrl의 172.30.1.48은 현재 큐브리드가 설치된 컴퓨터(노트북)와 연결된 LAN(혹은 무선 WIFI)의 IPv4 주소 예시이며,
       * 어플리케이션을 실행하는 핸드폰도 컴퓨터와 같은 LAN(혹은 무선WIFI)에 연결되어 있어야 큐브리드의 내용을 조회 가능.
       *
       * 컴퓨터와 연결된 LAN(혹은 무선WIFI)가 달라진다면,
       * cmd창에서 'ipconfig /all' 명령어를 수행하고 LAN(혹은 무선 WIFI)의 IPv4 주소를 '172.30.1.48' 위치에 입력하여야 한다.
       * IPv4 주소가 잘못될경우 에러가 발생하며 어플리케이션은 강제 종료된다.
       * 'PlayerActivity.java' 에도 cubrid와 연결하는 함수가 2개 있다. (void count(), void cubrid()) 모두 수정해주어야 한다.
-      * 'PlayerDetailActivity.java' 에도 cubrid와 연결하는 함수가 1개 있다. (oid cubrid()) 수정해주어야 한다.
+      * 'PlayerDetailActivity.java' 에도 cubrid와 연결하는 함수가 1개 있다. (void cubrid()) 수정해주어야 한다.
       */
     void cubrid() {
         new Thread(new Runnable() {
@@ -280,7 +280,7 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
                 try {
 
                     Class.forName("cubrid.jdbc.driver.CUBRIDDriver");
-                    String jdbcUrl = "jdbc:cubrid:192.168.0.9:30000:sample:::?charset=UTF-8";
+                    String jdbcUrl = "jdbc:cubrid:172.21.137.120:30000:sample:::?charset=UTF-8";
 
                     conn = DriverManager.getConnection(jdbcUrl, "dba", "1234");
 
@@ -297,7 +297,7 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
                        // sport = rs.getString("sport");
                         st[i][2] = rs.getString("nation");
                         //nation = rs.getString("nation");
-                        //System.out.println("name : " + name + " " + st[i][0] + " sport : " + sport + " nation : " + nation);
+                        System.out.println("name " + st[i][0] + " sport : " +st[i][1] + " nation : " + st[i][2]);
                         i++;
                     }
 
